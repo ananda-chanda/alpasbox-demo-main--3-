@@ -37,7 +37,7 @@ const WeddingInvitations = ({ heading = 'Invitation Video' }) => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const storedVideos = localStorage.getItem('weddingInvitationsVideos');
+      const storedVideos = localStorage.getItem('weddingInvitationsVide');
       const storedTimestamp = localStorage.getItem('weddingInvitationsTimestamp');
       const currentTime = Date.now();
       const refreshInterval = 60 * 60 * 1000;
@@ -144,8 +144,8 @@ const WeddingInvitations = ({ heading = 'Invitation Video' }) => {
               >
                 <div className="relative w-full overflow-hidden rounded-lg">
                   <div 
-                    className="absolute top-2 right-2 z-20 bg-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer shadow-md"
-                    onClick={(e) => e.preventDefault()}
+                    className="absolute top-2 right-2 z-30 bg-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer shadow-md"
+                    onClick={(e) => handleToggleWishlist(e, video)}
                   >
                     {loadingStates[video.id] ? (
                       <Loader className="w-4 h-4 animate-spin" />
@@ -156,7 +156,6 @@ const WeddingInvitations = ({ heading = 'Invitation Video' }) => {
                             ? 'text-[#FF3D57] fill-current'
                             : 'text-red-500'
                         }`}
-                        onClick={(e) => handleToggleWishlist(e, video)}
                       />
                     )}
                   </div>
@@ -164,7 +163,7 @@ const WeddingInvitations = ({ heading = 'Invitation Video' }) => {
                   {video.video_thumbnail ? (
                     <>
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300 z-0 rounded-lg"></div>
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                         <PlayCircle className="w-16 h-16 max-sm:w-8 max-sm:h-8 text-white" />
                       </div>
                       <img

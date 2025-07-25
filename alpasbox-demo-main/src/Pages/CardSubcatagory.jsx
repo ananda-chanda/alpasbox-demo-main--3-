@@ -460,7 +460,7 @@ try {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 px-2">
                   {displayedCards.map((card) => (
                     <Link
                       to={`/single-cart?id=${card.id}/${card.url_name ? card.url_name.replace(/\s+/g, '-') : ''}`}
@@ -475,7 +475,7 @@ try {
                               ? `${baseUrl}/${card.card_thumbnail}`
                               : 'https://via.placeholder.com/150?text=No+Thumbnail'}
                             alt={card.title || 'Card'}
-                            className="w-[380px] h-[500px] rounded-lg object-cover"
+                            className="w-[380px] h-[420px] md:h-[500px] rounded-lg object-cover"
                           />
                           <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             {/* <PlayCircle className="w-12 h-12 text-white" /> */}

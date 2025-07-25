@@ -29,6 +29,9 @@ const Footer = () => {
     { name: 'Refund & Policy', path: '/refund' },
     { name: 'Process', path: '/process' },
     { name: 'Blogs', path: '/blog' },
+    // {name:'Landing Page', path:'/landing'},
+    { name: 'Custom Page', path: '/custom-page' },
+     { name: 'Package', path: '/package' },
     { name: 'For Vendor', path: '/vendor-plan' },
   ];
 

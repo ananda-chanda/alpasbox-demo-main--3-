@@ -74,6 +74,46 @@ const SingleProd = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [touchStart, setTouchStart] = useState(0);
+const [touchEnd, setTouchEnd] = useState(0);
+
+// Add this function to handle touch swipe
+const handleTouchStart = (e) => {
+  setTouchStart(e.targetTouches[0].clientX);
+};
+
+const handleTouchMove = (e) => {
+  setTouchEnd(e.targetTouches[0].clientX);
+};
+
+const handleTouchEnd = () => {
+  if (!touchStart || !touchEnd) return;
+  
+  const distance = touchStart - touchEnd;
+  const isLeftSwipe = distance > 50;
+  const isRightSwipe = distance < -50;
+
+  if (isLeftSwipe) {
+    // Swipe left - next image
+    setDirection('right');
+    setCurrentImageIndex((prev) =>
+      prev === JSON.parse(productDetails.preview_image).length - 1
+        ? 0
+        : prev + 1
+    );
+  }
+  
+  if (isRightSwipe) {
+    // Swipe right - previous image
+    setDirection('left');
+    setCurrentImageIndex((prev) =>
+      prev === 0
+        ? JSON.parse(productDetails.preview_image).length - 1
+        : prev - 1
+    );
+  }
+};
+
 // Helper function to detect desktop
 const isDesktop = () => window.innerWidth >= 1024;
 
@@ -326,15 +366,43 @@ Thank you.
               {/* Conditional Rendering for Video or Card */}
 <div className="w-full" style={{ minHeight: "300px" }}>
   {selectedVideo && selectedVideo.video ? (
-    <video
-      src={`https://admin.urbantyohar.com/${selectedVideo.video}`}
-      controls
-      className="rounded-lg shadow-lg w-full h-full object-contain cursor-pointer"
-      style={{ minHeight: "300px" }}
-      onClick={() => isDesktop() && setIsModalOpen(true)}
+    <div 
+      className="relative cursor-pointer"
+      onClick={() => setIsModalOpen(true)}
     >
-      Your browser does not support the video tag.
-    </video>
+      {/* Using video element instead of image for preview */}
+      <video
+        src={`https://admin.urbantyohar.com/${selectedVideo.video}`}
+        className="rounded-lg shadow-lg w-full h-full object-contain"
+        style={{ minHeight: "300px" }}
+        preload="metadata"
+        muted
+        playsInline
+        onLoadedMetadata={(e) => {
+          e.target.currentTime = 0.1;
+        }}
+        onError={(e) => {
+          const container = e.target.parentElement;
+          if (container) {
+            const img = document.createElement('img');
+            img.src = `https://via.placeholder.com/400x300?text=Video+Preview`;
+            img.alt = "Video preview";
+            img.className = "rounded-lg shadow-lg w-full h-full object-contain";
+            img.style.minHeight = "300px";
+            container.replaceChild(img, e.target);
+          }
+        }}
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <svg 
+          className="w-16 h-16 text-white/80 bg-black/30 rounded-full p-3"
+          fill="currentColor" 
+          viewBox="0 0 20 20"
+        >
+          <path d="M8 5v10l7-5-7-5z" fillRule="evenodd" />
+        </svg>
+      </div>
+    </div>
   ) : productDetails ? (
     <div className="bg-white p-0 md:p-2 rounded-lg shadow-lg relative">
       {productDetails?.preview_image ? (
@@ -342,21 +410,45 @@ Thank you.
           <motion.div 
             className="image-container relative" 
             style={{ height: "450px", width: "100%" }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             {JSON.parse(productDetails.preview_image)[currentImageIndex].endsWith('.mp4') ? (
-              <motion.video
-                key={currentImageIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                src={`https://admin.urbantyohar.com/${JSON.parse(productDetails.preview_image)[currentImageIndex].replace(/\\/g, "/")}`}
-                controls
-                className="rounded-lg shadow-lg w-full h-full object-contain cursor-pointer"
-                style={{ height: "100%" }}
-                onClick={() => isDesktop() && setIsModalOpen(true)}
+              <div 
+                className="relative cursor-pointer w-full h-full"
+                onClick={() => setIsModalOpen(true)}
               >
-                Your browser does not support the video tag.
-              </motion.video>
+                <video
+                  src={`https://admin.urbantyohar.com/${JSON.parse(productDetails.preview_image)[currentImageIndex].replace(/\\/g, "/")}`}
+                  className="rounded-lg shadow-lg w-full h-full object-contain"
+                  preload="metadata"
+                  muted
+                  playsInline
+                  onLoadedMetadata={(e) => {
+                    e.target.currentTime = 0.1;
+                  }}
+                  onError={(e) => {
+                    const container = e.target.parentElement;
+                    if (container) {
+                      const img = document.createElement('img');
+                      img.src = `https://via.placeholder.com/400x300?text=Video+Preview`;
+                      img.alt = "Video preview";
+                      img.className = "rounded-lg shadow-lg w-full h-full object-contain";
+                      container.replaceChild(img, e.target);
+                    }
+                  }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg 
+                    className="w-16 h-16 text-white/80 bg-black/30 rounded-full p-3"
+                    fill="currentColor" 
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M8 5v10l7-5-7-5z" fillRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
             ) : (
               <motion.img
                 key={`image-${currentImageIndex}`}
@@ -373,17 +465,18 @@ Thank you.
                 transition={{ duration: 0.3 }}
                 src={`https://admin.urbantyohar.com/${JSON.parse(productDetails.preview_image)[currentImageIndex].replace(/\\/g, "/")}`}
                 alt="Product"
-                className="w-full h-full object-cover md:object-cover rounded-lg cursor-pointer"
-                onClick={() => isDesktop() && setIsModalOpen(true)}
+                className="w-full h-full object-contain md:object-cover rounded-lg cursor-pointer"
+                onClick={() => setIsModalOpen(true)}
               />
             )}
 
-            {/* Navigation Arrows - Moved inside the container with absolute positioning */}
+            {/* Navigation Arrows */}
             <div className="absolute left-2 md:left-1 top-1/2 transform -translate-y-1/2 z-10">
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setDirection('left');
                   setCurrentImageIndex((prev) =>
                     prev === 0
@@ -414,7 +507,8 @@ Thank you.
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setDirection('right');
                   setCurrentImageIndex((prev) =>
                     prev === JSON.parse(productDetails.preview_image).length - 1
@@ -452,18 +546,57 @@ Thank you.
                 whileTap={{ scale: 0.95 }}
               >
                 {file.endsWith('.mp4') ? (
-                  <video
-                    src={`https://admin.urbantyohar.com/${file.replace(/\\/g, "/")}`}
-                    className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg cursor-pointer ${
-                      currentImageIndex === index ? "border-4 border-blue-500" : ""
-                    }`}
-                    onClick={() => {
-                      setDirection(index > currentImageIndex ? 'right' : 'left');
-                      setCurrentImageIndex(index);
-                    }}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                  <div className="relative">
+                    <video
+                      src={`https://admin.urbantyohar.com/${file.replace(/\\/g, "/")}`}
+                      className={`w-16 h-16 md:w-20 md:h-20  object-cover rounded-lg cursor-pointer ${
+                        currentImageIndex === index ? "border-4 border-blue-500" : ""
+                      }`}
+                      preload="metadata"
+                      muted
+                      playsInline
+                      onLoadedMetadata={(e) => {
+                        e.target.currentTime = 0.1;
+                      }}
+                      onClick={() => {
+                        setDirection(index > currentImageIndex ? 'right' : 'left');
+                        setCurrentImageIndex(index);
+                      }}
+                      onError={(e) => {
+                        const container = e.target.parentElement;
+                        if (container) {
+                          const img = document.createElement('img');
+                          img.src = `https://via.placeholder.com/80?text=Video`;
+                          img.alt = `Video thumbnail ${index}`;
+                          img.className = `w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg cursor-pointer ${
+                            currentImageIndex === index ? "border-4 border-blue-500" : ""
+                          }`;
+                          img.onclick = () => {
+                            setDirection(index > currentImageIndex ? 'right' : 'left');
+                            setCurrentImageIndex(index);
+                          };
+                          container.replaceChild(img, e.target);
+                        }
+                      }}
+                    />
+                    <motion.div 
+                      className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                      initial={{ opacity: 0.7 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                      <svg 
+                        className="w-6 h-6 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path 
+                          d="M8 5v10l7-5-7-5z"
+                          fillRule="evenodd"
+                        />
+                      </svg>
+                    </motion.div>
+                  </div>
                 ) : (
                   <img
                     src={`https://admin.urbantyohar.com/${file.replace(/\\/g, "/")}`}
@@ -477,25 +610,6 @@ Thank you.
                     }}
                   />
                 )}
-                {file.endsWith('.mp4') && (
-                  <motion.div 
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                    initial={{ opacity: 0.7 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-                  >
-                    <svg 
-                      className="w-6 h-6 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path 
-                        d="M8 5v10l7-5-7-5z"
-                        fillRule="evenodd"
-                      />
-                    </svg>
-                  </motion.div>
-                )}
               </motion.div>
             ))}
           </div>
@@ -508,8 +622,8 @@ Thank you.
     <p className="text-gray-500 text-center">No video or product details available</p>
   )}
 
-  {/* Fullscreen Modal (only shown on desktop) */}
-  {isModalOpen && isDesktop() && (
+  {/* Fullscreen Modal with touch support */}
+  {isModalOpen && (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -523,13 +637,18 @@ Thank you.
         exit={{ scale: 0.9 }}
         className="max-w-5xl w-full mx-auto p-4"
         onClick={e => e.stopPropagation()}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div className="relative">
           {/* Modal content */}
           {selectedVideo && selectedVideo.video ? (
             <video
+              key={`modal-video-${selectedVideo.video}`}
               src={`https://admin.urbantyohar.com/${selectedVideo.video}`}
               controls
+              autoPlay
               className="w-full h-auto max-h-[80vh] rounded-lg object-contain"
             >
               Your browser does not support the video tag.
@@ -538,8 +657,10 @@ Thank you.
             <>
               {JSON.parse(productDetails.preview_image)[currentImageIndex].endsWith('.mp4') ? (
                 <video
+                  key={`modal-video-${currentImageIndex}`}
                   src={`https://admin.urbantyohar.com/${JSON.parse(productDetails.preview_image)[currentImageIndex].replace(/\\/g, "/")}`}
                   controls
+                  autoPlay
                   className="w-full h-auto max-h-[80vh] rounded-lg object-contain"
                 >
                   Your browser does not support the video tag.
@@ -562,11 +683,12 @@ Thank you.
                   onClick={(e) => {
                     e.stopPropagation();
                     setDirection('left');
-                    setCurrentImageIndex((prev) =>
-                      prev === 0
+                    setCurrentImageIndex((prev) => {
+                      const newIndex = prev === 0
                         ? JSON.parse(productDetails.preview_image).length - 1
-                        : prev - 1
-                    );
+                        : prev - 1;
+                      return newIndex;
+                    });
                   }}
                 >
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -584,11 +706,12 @@ Thank you.
                   onClick={(e) => {
                     e.stopPropagation();
                     setDirection('right');
-                    setCurrentImageIndex((prev) =>
-                      prev === JSON.parse(productDetails.preview_image).length - 1
+                    setCurrentImageIndex((prev) => {
+                      const newIndex = prev === JSON.parse(productDetails.preview_image).length - 1
                         ? 0
-                        : prev + 1
-                    );
+                        : prev + 1;
+                      return newIndex;
+                    });
                   }}
                 >
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -786,53 +909,60 @@ Thank you.
 </div>
 
 
-<h3 className=" font-poppins font-semibold">Additional Language</h3>
-<div className="flex items-center space-x-6 font-poppins">
-  <div className="flex items-center">
-    <input
-      id="english"
-      name="language"
-      type="radio"
-      value="english"
-      className="mr-2"
-      checked={selectedLanguage === "english"}
-      onChange={() => setSelectedLanguage("english")}
-    />
-    <label htmlFor="english">Default (₹ 0)</label>
-  </div>
-  
-  <div className="flex items-center">
-    <input
-      id="other"
-      name="language"
-      type="radio"
-      value="other"
-      className="mr-2"
-      checked={selectedLanguage === "other"}
-      onChange={() => setSelectedLanguage("other")}
-    />
-    <label htmlFor="other">Other (₹ 999.00)</label>
-  </div>
-  
-  {selectedLanguage === "other" && (
-    <div className="relative inline-block">
-      <select 
-        className="border border-yellow-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-        value={otherLanguage}
-        onChange={(e) => setOtherLanguage(e.target.value)}
-      >
-        <option value="">Select Language</option>
-        <option value="hindi">Hindi</option>
-        <option value="marathi">Marathi</option>
-        <option value="gujarati">Gujarati</option>
-        <option value="tamil">Tamil</option>
-        <option value="telugu">Telugu</option>
-        <option value="kannada">Kannada</option>
-        <option value="bengali">Bengali</option>
-        <option value="punjabi">Punjabi</option>
-      </select>
+<h3 className="font-poppins font-semibold">Additional Language</h3>
+<div className="font-poppins">
+  <div className="flex flex-wrap items-center">
+    <div className="flex items-center mr-6">
+      <input
+        id="english"
+        name="language"
+        type="radio"
+        value="english"
+        className="mr-2"
+        checked={selectedLanguage === "english"}
+        onChange={() => setSelectedLanguage("english")}
+      />
+      <label htmlFor="english">Default (₹ 0)</label>
     </div>
-  )}
+    
+    <div className="flex items-center mr-6">
+      <input
+        id="other"
+        name="language"
+        type="radio"
+        value="other"
+        className="mr-2"
+        checked={selectedLanguage === "other"}
+        onChange={() => setSelectedLanguage("other")}
+      />
+      <label htmlFor="other">Other (₹ 999.00)</label>
+    </div>
+    
+    {selectedLanguage === "other" && (
+      <div className="relative w-full md:inline-block md:max-w-[160px] md:w-full mt-2 md:mt-0">
+        <select 
+          className="w-full border border-blue-500 rounded-md px-3 py-2.5 md:px-3 md:py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs md:text-sm appearance-none"
+          value={otherLanguage}
+          onChange={(e) => setOtherLanguage(e.target.value)}
+        >
+          <option value="">Select Language</option>
+          <option value="hindi">Hindi</option>
+          <option value="marathi">Marathi</option>
+          <option value="gujarati">Gujarati</option>
+          <option value="tamil">Tamil</option>
+          <option value="telugu">Telugu</option>
+          <option value="kannada">Kannada</option>
+          <option value="bengali">Bengali</option>
+          <option value="punjabi">Punjabi</option>
+        </select>
+        <div className="absolute inset-y-0 right-1 hidden md:flex items-center pointer-events-none">
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </div>
+      </div>
+    )}
+  </div>
 </div>
 
 
@@ -1093,7 +1223,7 @@ Thank you.
     ))}
   </div>
 </div>
-<div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-200 shadow-lg border-t border-gray-200 p-1 z-50">
+<div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-200 shadow-lg border-t border-gray-200 p-1 z-40">
   <div className="flex items-center justify-between px-2">
     <div className="w-1/4 pl-4">
       <span className="font-bold text-lg">₹{Math.round(calculateTotalPrice() + calculateTotalPrice()*0.18)}</span>

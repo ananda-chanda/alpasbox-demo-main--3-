@@ -218,7 +218,7 @@ const WeddingInvitations = () => {
         <InvideoBanner mainId={1} />
       </div>
 
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 mt-0">
+      <div className="container mx-auto px-2 sm:px-4 pb-2 sm:py-0 mt-0">
         <h2 className="text-xl sm:text-2xl font-poppins text-gray-800 mb-4 sm:mb-6 text-center">
           Browse by Category
         </h2>

@@ -90,7 +90,7 @@ const Faq = () => {
           <div key={index} className="border-b">
             <button
               onClick={() => toggleAnswer(`answer${index}`)}
-              className="w-full text-left px-6 py-5 text-lg font-poppins font-semibold  text-gray-600 hover:bg-gray-100 focus:outline-none flex justify-between items-center"
+              className="w-full text-left px-6 py-5 text-lg font-poppins font-medium  text-gray-600 hover:bg-gray-100 focus:outline-none flex justify-between items-center"
             >
               {faq.question}
               <span className="text-xl lg:text-2xl">{activeAnswer === `answer${index}` ? '-' : '+'}</span>

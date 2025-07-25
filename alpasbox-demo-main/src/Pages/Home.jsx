@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>Urban Tyohar | Design Wedding Invitations, Cards & Videos – Your Ultimate Wedding Invitation Maker</title>
+        <title> Invitation Card Design & Printing services Wedding Video Maker | Urban Tyohar</title>
         <meta name="description" content="Urban Tyohar lets you design wedding invitations, wedding invitation cards, and wedding invitation videos with ease. Choose from stunning templates and create the perfect invite for your big day" />
           <link rel="canonical" href="/" />
       </Helmet>

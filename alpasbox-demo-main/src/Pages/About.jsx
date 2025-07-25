@@ -36,7 +36,7 @@ const About = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-2 md:py-20 mt-8 md:mt-4">
+    <div className="container mx-auto px-4 py-2 md:py-20 mt-12 md:mt-4 ">
       {/* Main Content Section */}
       <div className="flex flex-col items-center justify-center font-poppins text-center">
         <h1 className="text-2xl md:text-2xl font-semibold text-[#333] mt-5 mb-2.5">

@@ -6,8 +6,8 @@ import Logo from "../assets/Navbar/Logo.png";
 import axios from "axios";
 import Utlogo from '../assets/Navbar/Utlogo.png';
 import VendorLogo from '../assets/Navbar/vendor_logo.png';
-import Ut from '../assets/Hero/Logo-UT.png'
-
+import Ut from '../assets/Hero/Logo-UT.png';
+import { motion, AnimatePresence } from "framer-motion"; // Import motion from framer-motion
 
 const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -26,6 +26,8 @@ const Navbar = () => {
   const [specialSubCategories3, setSpecialSubCategories3] = useState([]); // State for maincat_id=3
   const [specialSubCategories4, setSpecialSubCategories4] = useState([]); // State for maincat_id=4 (we'll still fetch but not use directly)
   const [searchQuery, setSearchQuery] = useState(""); 
+
+  
 
   useEffect(() => {
     const userToken = localStorage.getItem("user_token");
@@ -188,7 +190,7 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          <div
+          <motion.div
             className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg flex items-center justify-between"
             onClick={() => {
               if (handleMainCategoryClick(mainCategory)) {
@@ -201,10 +203,11 @@ const Navbar = () => {
                 setShowSubMenu(true);
               }
             }}
+            whileTap={{ scale: 0.97 }}
           >
             {mainCategory.maincat_name}
             {hasItems && mainCategory.id !== 6 && <HiChevronRight className="text-xl" />}
-          </div>
+          </motion.div>
         )}
       </div>
     );
@@ -220,7 +223,11 @@ const Navbar = () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               navigate("/");
             }} >
-            <img src={Utlogo} alt="Logo" className="h-10 md:h-10 w-fit object-contain" />
+            <img 
+              src={isMobile ? Ut : Utlogo} 
+              alt="Logo" 
+              className="h-10 md:h-10 w-fit object-contain" 
+            />
           </div>
 
           {/* Navigation Menu for Desktop */}
@@ -232,24 +239,15 @@ const Navbar = () => {
                     <DropdownMenu key={mainCategory.id} mainCategory={mainCategory} />
                   ))}
                 </div>
-                {/* <a 
-                  className="text-white font-poppins font-medium px-4 py-2 hover:text-black-600 transition-colors duration-300 cursor-pointer rounded-lg flex items-center gap-2" 
-                  onClick={() => {navigate('/vendor-plan')
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                > 
-                  <span className="flex items-center"> 
-                    <img src={VendorLogo} alt="Vendor Logo" className="h-5 w-5 mr-2" /> 
-                    Vendor 
-                  </span>
-                </a> */}
               </div>
             </div>
           </nav>
 
           {/* Login/Profile Button */}
           {isLoggedIn ? (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="text-[#4A00FF] max-md:hidden flex items-center gap-1 bg-[#FFCA00] px-2 py-1 rounded-3xl cursor-pointer hover:bg-[#E0A800] transition-colors duration-300 font-poppins font-medium"
               onClick={() => {
                 const userToken = localStorage.getItem("user_token");
@@ -265,111 +263,142 @@ const Navbar = () => {
             >
               <IoMdPerson className="text-lg" />
               Profile
-            </button>
+            </motion.button>
           ) : (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="flex items-center max-md:hidden gap-1 bg-[#FFCA00] px-2 py-1 rounded-3xl cursor-pointer hover:bg-[#FFCA00] transition-colors duration-300"
               onClick={() => navigate("/login")}
             >
               <IoMdPerson className="text-lg" />
               Login
-            </button>
+            </motion.button>
           )}
 
           {/* Mobile Menu Button */}
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             className="md:hidden text-xl p-1 text-white hover:bg-gray-300 rounded-lg transition-colors duration-300"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <HiOutlineX /> : <HiOutlineMenuAlt3 />}
-          </button>
+          </motion.button>
         </div>
 
-        {/* Mobile Menu */}
-     {isMobileMenuOpen && isMobile && (
-  <div className="fixed inset-0 bg-white bg-opacity-50 z-40">
-    <div className="fixed top-0 left-0 w-full h-full">
-      {/* Main Menu */}
-      <div className={`absolute top-0 right-0 w-full h-full bg-white shadow-lg z-50 transition-transform duration-300 transform ${showSubMenu ? '-translate-x-full' : 'translate-x-0'}`}>
-        <div className="flex items-center justify-between p-4 border-b">
-          <img src={Logo} alt="Logo" className="h-8 w-24 object-contain" />
-          <button onClick={() => setIsMobileMenuOpen(false)} className="text-2xl">
-            <HiOutlineX />
-          </button>
-        </div>
-        
-        <div className="flex flex-col gap-0 p-2">
-          {mainCategories.map((mainCategory) => (
-            <DropdownMenu key={mainCategory.id} mainCategory={mainCategory} />
-          ))}
-          <a
-            className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg"
-            onClick={() => {
-              navigate("/contact");
-              setIsMobileMenuOpen(false);
-            }}
-          >
-            Contact Us
-          </a>
-          {!isLoggedIn && (
-            <a
-              className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg"
-              onClick={() => {
-                window.scrollTo(0, 0);
-                navigate("/login");
-                setIsMobileMenuOpen(false);
-              }}
+        {/* Mobile Menu with AnimatePresence for smooth transitions */}
+        <AnimatePresence>
+          {isMobileMenuOpen && isMobile && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-white bg-opacity-50 z-40"
             >
-              Login
-            </a>
-          )}
-          {/* Vendor link moved to the end */}
-          <a
-            className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg flex items-center gap-0 mt-2"
-            onClick={() => {
-              // alert('Currently we are working on this page. Please visit after some time.');
-              navigate('/vendor-plan')
-              setIsMobileMenuOpen(false);
-              //  navigate('/vendor-plan')
-            }}
-          >
-            <img src={VendorLogo} alt="Vendor Logo" className="h-5 w-5" />
-            Vendor
-          </a>
-        </div>
-      </div>
-      {/* Categories Sub Menu */}
-      <div className={`absolute top-0 left-0 w-full h-full bg-white shadow-lg z-50 transition-transform duration-300 transform ${showSubMenu ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex items-center justify-between p-4 border-b">
-          <button 
-            onClick={() => setShowSubMenu(false)}
-            className="flex items-center gap-2 text-gray-600"
-          >
-            <HiChevronLeft className="text-xl" />
-            Back
-          </button>
-          <button onClick={() => setIsMobileMenuOpen(false)} className="text-2xl">
-            <HiOutlineX />
-          </button>
-        </div>
-        <div className="flex flex-col gap-4 p-4">
-          {/* Show regular categories for all main categories including maincat_id=3 */}
-          {activeCategory && categories[activeCategory.id]?.map((category) => (
-            <div
-              key={category.id}
-              onClick={() => handleCategoryClick(activeCategory, category)}
-            >
-              <div className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg">
-                {category.category_name}
+              <div className="fixed top-0 left-0 w-full h-full">
+                {/* Main Menu */}
+                <motion.div 
+                  className="absolute top-0 right-0 w-full h-full bg-white shadow-lg z-50"
+                  initial={{ x: "100%" }}
+                  animate={{ x: showSubMenu ? "100%" : 0 }}
+                  transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+                >
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <img src={Logo} alt="Logo" className="h-8 w-24 object-contain" />
+                    <motion.button 
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setIsMobileMenuOpen(false)} 
+                      className="text-2xl"
+                    >
+                      <HiOutlineX />
+                    </motion.button>
+                  </div>
+                  
+                  <div className="flex flex-col gap-0 p-2">
+                    {mainCategories.map((mainCategory) => (
+                      <DropdownMenu key={mainCategory.id} mainCategory={mainCategory} />
+                    ))}
+                    <motion.a
+                      whileTap={{ scale: 0.97 }}
+                      className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg"
+                      onClick={() => {
+                        navigate("/contact");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Contact Us
+                    </motion.a>
+                    {!isLoggedIn && (
+                      <motion.a
+                        whileTap={{ scale: 0.97 }}
+                        className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg"
+                        onClick={() => {
+                          window.scrollTo(0, 0);
+                          navigate("/login");
+                          setIsMobileMenuOpen(false);
+                        }}
+                      >
+                        Login
+                      </motion.a>
+                    )}
+                    {/* Vendor link moved to the end */}
+                    <motion.a
+                      whileTap={{ scale: 0.97 }}
+                      className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg flex items-center gap-0 mt-2"
+                      onClick={() => {
+                        navigate('/vendor-plan')
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <img src={VendorLogo} alt="Vendor Logo" className="h-5 w-5" />
+                      Vendor
+                    </motion.a>
+                  </div>
+                </motion.div>
+
+                {/* Categories Sub Menu */}
+                <motion.div 
+                  className="absolute top-0 left-0 w-full h-full bg-white shadow-lg z-50"
+                  initial={{ x: "100%" }}
+                  animate={{ x: showSubMenu ? 0 : "100%" }}
+                  transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+                >
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <motion.button 
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setShowSubMenu(false)}
+                      className="flex items-center gap-2 text-gray-600"
+                    >
+                      <HiChevronLeft className="text-xl" />
+                      Back
+                    </motion.button>
+                    <motion.button 
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setIsMobileMenuOpen(false)} 
+                      className="text-2xl"
+                    >
+                      <HiOutlineX />
+                    </motion.button>
+                  </div>
+                  <div className="flex flex-col gap-4 p-4">
+                    {/* Show regular categories for all main categories including maincat_id=3 */}
+                    {activeCategory && categories[activeCategory.id]?.map((category) => (
+                      <motion.div
+                        key={category.id}
+                        onClick={() => handleCategoryClick(activeCategory, category)}
+                        whileTap={{ scale: 0.97 }}
+                        className="font-medium px-4 py-2 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-300 cursor-pointer rounded-lg"
+                      >
+                        {category.category_name}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               </div>
-            </div>
-            
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

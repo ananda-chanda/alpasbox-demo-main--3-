@@ -25,7 +25,10 @@ import Cardsub from './Pages/CardSubcatagory';
 import Bills from './Pages/Bills'
 import Payment from './Pages/Payment';
 import Gift from './Pages/Gift';
-import Avai from './Pages/Available'
+import Avai from './Pages/Available';
+import Landing from './Pages/Landingpg';
+import CustomPage from './Pages/CustomPage';
+import Package from './Pages/Package';
 
 // Lazy loaded components
 const Home = lazy(() => import('./Pages/Home'));
@@ -89,7 +92,12 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/thank-you" element={<Thankyou />} />
               <Route path="/gift" element={<Gift />} />
-              
+              <Route path="/landing" element={<Landing />} />
+<Route path="/landing/:id" element={<Landing />} />
+<Route path="/landing/:id/:meta_url" element={<Landing />} />
+              <Route path="/custom-page" element={<CustomPage />} />
+              <Route path="/package" element={<Package />} />
+
               {/* Blog Routes */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:id" element={<BlogPost />} />

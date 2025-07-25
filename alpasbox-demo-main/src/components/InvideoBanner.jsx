@@ -10,7 +10,7 @@ const InvideoBanner = ({ mainId }) => {
   useEffect(() => {
     const fetchBanners = async () => {
       // Check if data is already in localStorage
-      const storedBanners = localStorage.getItem('bann');
+      const storedBanners = localStorage.getItem('bn');
       if (storedBanners) {
         // Use stored data if available
         setBanners(JSON.parse(storedBanners));
@@ -76,7 +76,7 @@ const InvideoBanner = ({ mainId }) => {
 
   return (
     <div className="relative w-full ">
-      <div className="relative h-[250px] md:h-[700px] overflow-hidden">
+      <div className="relative h-[230px] md:h-[600px] overflow-hidden">
         <div className="relative w-full h-full">
           {banners.map((banner, index) => {
             const imageUrl = getImageUrl(banner.banner);

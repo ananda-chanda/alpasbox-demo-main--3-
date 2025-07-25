@@ -38,19 +38,19 @@ const AboutUT = () => {
     <div className="max-w-7xl mx-auto my-16 p-8 bg-white rounded-lg font-poppins mt-2">
       {/* Header with images on both sides */}
       <div className="flex items-center justify-center gap-4 mb-8">
-        <img
+        {/* <img
           src={himg}
           alt="left border"
           className="h-12 w-32 sm:w-48 md:w-64 lg:w-80 max-sm:hidden"
-        />
-        <h1 className="text-3xl sm:text-4xl font-poppins font-bold text-center text-gray-800">
-          About Urban Tyohar
+        /> */}
+        <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-center text-gray-800 ">
+         Urban Tyohar – Best Caricature Wedding Invitations <br /> & Custom Wedding Stationery <br /> Maker in India
         </h1>
-        <img
+        {/* <img
           src={himg}
           alt="right border"
           className="h-12 w-32 sm:w-48 md:w-64 lg:w-80 max-sm:hidden"
-        />
+        /> */}
       </div>
 
       {/* Loading state */}

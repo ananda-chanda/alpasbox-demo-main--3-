@@ -32,7 +32,7 @@ const Instationary = () => {
             'Authorization': 'Bearer 1|jTJPqu1PMw114pLFNnPjRm5TZx4vd0tE5Y5FDcQNaac47fa3'
           },
           maxBodyLength: Infinity,
-          timeout: 10000,
+          timeout: 50000,
         });
         startTransition(() => {
           if (response.data && Array.isArray(response.data.data)) {
@@ -120,11 +120,11 @@ const Instationary = () => {
                   <Link
                     key={cart.id || index}
                     to={`/stationary?id=${cart.id}/${cart.url_name ? cart.url_name.replace(/\s+/g, '-') : ''}`}
-                    className="relative bg-white rounded-lg border-2 border-yellow-200 shadow-md shadow-gray-300 transition-shadow duration-300 cursor-pointer p-1 md:p-4 block"
+                    className="relative bg-white rounded-lg border-2 border-yellow-200 shadow-md shadow-gray-300 transition-shadow duration-300 cursor-pointer p-1 md:p-4 block flex flex-col h-full"
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    style={{ minHeight: '340px', maxWidth: '290px', textDecoration: 'none' }}
+                    style={{ minHeight: '380px', maxWidth: '290px', textDecoration: 'none' }}
                   >
-                    <div className="relative w-full overflow-hidden rounded-lg group">
+                    <div className="relative w-full overflow-hidden rounded-lg group flex-1">
                       <div 
                         className="absolute top-2 right-2 z-20 bg-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
                         onClick={(e) => e.preventDefault()}
@@ -146,7 +146,7 @@ const Instationary = () => {
                         <img
                           src={`${baseUrl}/${cart.card_thumbnail}`}
                           alt={cart.maincat_name || 'Card thumbnail'}
-                          className="w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-110 rounded-lg"
+                          className="w-full h-full object-cover p-1 transition-transform duration-300 group-hover:scale-110 rounded-lg"
                           onError={(e) => {
                             e.target.src = '/placeholder-image.jpg';
                             e.target.alt = 'Image not available';
@@ -158,22 +158,27 @@ const Instationary = () => {
                         </div>
                       )}
                     </div>
-                    <div className="mt-4 text-center">
-                      <h2 className="font-poppins text-gray-800 text-lg line-clamp-2">
-                        {cart.title || 'Untitled Card'}
-                      </h2>
-                      <div className="flex justify-center items-center space-x-2 mt-1">
-                        <p className="text-lg text-gray-600 line-through">₹{cart.price}</p>
-                        <p className="text-xl font-bold text-gray-800">₹{cart.offer_dis}</p>
+                    
+                    {/* Fixed bottom content */}
+                    <div className="mt-auto pt-4 flex flex-col">
+                      <div className="text-center mb-3">
+                        <h2 className="font-poppins text-gray-800 text-md md:text-lg line-clamp-2 mb-2">
+                          {cart.title || 'Untitled Card'}
+                        </h2>
+                        <div className="flex justify-center items-center space-x-2">
+                          <p className="text-lg text-gray-600 line-through">₹{cart.price}</p>
+                          <p className="text-xl font-bold text-gray-800">₹{cart.offer_dis}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="relative text-center flex justify-center items-center mt-2">
-                      <img
-                        src={moreinfo}
-                        alt="More Info"
-                        className="cursor-pointer hover:scale-110 transition-transform duration-300"
-                        style={{ maxWidth: '120px'  }}
-                      />
+                      
+                      <div className="text-center flex justify-center items-center">
+                        <img
+                          src={moreinfo}
+                          alt="More Info"
+                          className="cursor-pointer hover:scale-110 transition-transform duration-300"
+                          style={{ maxWidth: '120px'  }}
+                        />
+                      </div>
                     </div>
                   </Link>
                 ))

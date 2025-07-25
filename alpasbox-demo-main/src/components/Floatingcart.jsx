@@ -26,14 +26,14 @@ const Floatingcart = () => {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-60"
+          className="fixed inset-0 bg-black/50 z-[9998]"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div 
-        className={`fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-60 ${
+        className={`fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-[9999] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -94,7 +94,7 @@ const Floatingcart = () => {
     <>
       <div
         onClick={handleCartClick}
-        className="fixed bottom-16 right-8 cursor-pointer transform hover:scale-110 transition-all duration-700 animate-bounce"
+        className="fixed bottom-16 right-8 cursor-pointer transform hover:scale-110 transition-all duration-700 animate-bounce z-[9997]"
       >
         <div className="bg-[#4A00FF] p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
           <ShoppingCart className="h-6 w-6 text-white" />

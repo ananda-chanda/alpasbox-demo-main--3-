@@ -189,6 +189,8 @@ useEffect(() => {
   };
 }, []);
 
+// for hide button
+
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (productId) {
@@ -822,7 +824,7 @@ useEffect(() => {
     {/* Add this at the very end of your return statement, right before the final closing div */}
   {/* Mobile fixed buttons - shown only on mobile screens */}
 {/* Mobile fixed buttons - shown only on mobile screens */}
-<div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-200 shadow-lg border-t border-gray-200 p-2 z-50">
+<div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-200 shadow-lg border-t border-gray-200 p-2 z-40">
   <div className="flex items-center justify-between px-2">
     <div className="w-1/4 pl-3">
       <span className="font-bold text-lg">₹{Math.round(calculateTotalPrice() + (calculateTotalPrice() * 0.18))}</span>

@@ -295,79 +295,132 @@ Thank you.
             className="md:col-span-2 bg-white p-4 md:p-8 rounded-lg border-2 border-yellow-500 w-full"
             ref={mainVideoRef}
           >
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-[1.4fr_2fr] gap-4 md:gap-8">
+ {/* update for second video */}
               {/* Conditional Rendering for Video or Card */}
-<div className="w-full" style={{ minHeight: "300px" }}>
+<div className="w-full"  style={{ minHeight: "300px" }}>
   {selectedVideo && selectedVideo.video ? (
-    <video
-      src={`https://admin.urbantyohar.com/${selectedVideo.video}`}
-      controls
-      className="rounded-lg shadow-lg w-full h-full object-cover cursor-pointer"
-      style={{ minHeight: "300px" }}
-      onClick={() => isDesktop() && setIsModalOpen(true)}
+    <div 
+      className="relative cursor-pointer "
+      onClick={() => setIsModalOpen(true)}
     >
-      Your browser does not support the video tag.
-    </video>
+      {/* Video preview with play button overlay */}
+      <video
+        src={`https://admin.urbantyohar.com/${selectedVideo.video}`}
+        className="rounded-lg shadow-lg object-contain w-full py-2"
+        style={{ minHeight: "300px" }}
+        preload="metadata"
+        muted
+        playsInline
+        onLoadedMetadata={(e) => {
+          e.target.currentTime = 0.1;
+        }}
+        onError={(e) => {
+          const container = e.target.parentElement;
+          if (container) {
+            const img = document.createElement('img');
+            img.src = `https://via.placeholder.com/400x300?text=Video+Preview`;
+            img.alt = "Video preview";
+            img.className = "rounded-lg shadow-lg h-auto object-contain w-full";
+            container.replaceChild(img, e.target);
+          }
+        }}
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <svg 
+          className="w-16 h-16 text-white/80 bg-black/30 rounded-full p-3"
+          fill="currentColor" 
+          viewBox="0 0 20 20"
+        >
+          <path d="M8 5v10l7-5-7-5z" fillRule="evenodd" />
+        </svg>
+      </div>
+    </div>
   ) : productDetails ? (
-    <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg relative">
+    <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg relative w-full">
       {productDetails?.preview_image ? (
         <>
-          {/* Main content container */}
-          <div className="relative overflow-hidden rounded-lg" style={{ height: '400px' }}>
+          <div className="relative overflow-hidden rounded-lg w-full">
             <AnimatePresence initial={false} custom={direction}>
-              {/* Check if current item is a video */}
               {JSON.parse(productDetails.preview_image)[currentImageIndex]?.toLowerCase().endsWith('.mp4') ? (
-                <motion.video
-                  key={`video-${currentImageIndex}`}
-                  custom={direction}
-                  initial={(direction) => ({ 
-                    opacity: 0, 
-                    x: direction === 'left' ? -300 : 300 
-                  })}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={(direction) => ({ 
-                    opacity: 0, 
-                    x: direction === 'left' ? 300 : -300 
-                  })}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  src={`https://admin.urbantyohar.com/${JSON.parse(
-                    productDetails.preview_image
-                  )[currentImageIndex].replace(/\\/g, "/")}`}
-                  controls
-                  className="w-full h-full object-contain rounded-lg cursor-pointer absolute inset-0"
-                  onClick={() => isDesktop() && setIsModalOpen(true)}
+                <div 
+                  className="relative cursor-pointer w-full"
+                  onClick={() => setIsModalOpen(true)}
                 >
-                  Your browser does not support the video tag.
-                </motion.video>
+                  <motion.video
+                    key={`video-${currentImageIndex}`}
+                    custom={direction}
+                    initial={(direction) => ({ 
+                      opacity: 0, 
+                      x: direction === 'left' ? '-100%' : '100%' 
+                    })}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={(direction) => ({ 
+                      opacity: 0, 
+                      x: direction === 'left' ? '100%' : '-100%' 
+                    })}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    src={`https://admin.urbantyohar.com/${JSON.parse(
+                      productDetails.preview_image
+                    )[currentImageIndex].replace(/\\/g, "/")}`}
+                    className="w-full h-auto rounded-lg"
+                    style={{ maxHeight: "300px" }}
+                    preload="metadata"
+                    muted
+                    playsInline
+                    onLoadedMetadata={(e) => {
+                      e.target.currentTime = 0.1;
+                    }}
+                    onError={(e) => {
+                      const container = e.target.parentElement;
+                      if (container) {
+                        const img = document.createElement('img');
+                        img.src = `https://via.placeholder.com/400x300?text=Video+Preview`;
+                        img.alt = "Video preview";
+                        img.className = "w-full h-auto rounded-lg";
+                        container.replaceChild(img, e.target);
+                      }
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <svg 
+                      className="w-16 h-16 text-white/80 bg-black/30 rounded-full p-3"
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M8 5v10l7-5-7-5z" fillRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
               ) : (
                 <motion.img
                   key={`image-${currentImageIndex}`}
                   custom={direction}
                   initial={(direction) => ({ 
                     opacity: 0, 
-                    x: direction === 'left' ? -300 : 300 
+                    x: direction === 'left' ? '-100%' : '100%' 
                   })}
                   animate={{ opacity: 1, x: 0 }}
                   exit={(direction) => ({ 
                     opacity: 0, 
-                    x: direction === 'left' ? 300 : -300 
+                    x: direction === 'left' ? '100%' : '-100%' 
                   })}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   src={`https://admin.urbantyohar.com/${JSON.parse(
                     productDetails.preview_image
                   )[currentImageIndex].replace(/\\/g, "/")}`}
                   alt="Product"
-                  className={`w-full h-full rounded-lg cursor-zoom-in object-contain absolute inset-0 ${
+                  className={`w-full h-auto rounded-lg cursor-zoom-in ${
                     isZoomed ? 'scale-150' : ''
                   }`}
                   style={isZoomed ? {
-                    transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
                   } : {}}
                   onClick={() => {
-                    if (isDesktop() && !isZoomed) {
+                    if (!isZoomed) {
                       setIsModalOpen(true);
                     } else {
-                      setIsZoomed(!isZoomed);
+                      setIsZoomed(false);
                     }
                   }}
                   onMouseMove={handleImageZoom}
@@ -377,65 +430,66 @@ Thank you.
             </AnimatePresence>
           </div>
 
-          {/* Navigation Arrows - Only show when not zoomed */}
           {!isZoomed && (
             <>
-              <motion.button
-                whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  setDirection('left');
-                  setCurrentImageIndex((prev) =>
-                    prev === 0
-                      ? JSON.parse(productDetails.preview_image).length - 1
-                      : prev - 1
-                  );
-                }}
-                className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/80 rounded-full p-1 md:p-2 hover:bg-white z-10"
-              >
-                <svg
-                  className="w-4 h-4 md:w-6 md:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="absolute inset-0 flex items-center justify-between z-10 px-2 md:px-4 pointer-events-none">
+                <motion.button
+                  whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    setDirection('left');
+                    setCurrentImageIndex((prev) =>
+                      prev === 0
+                        ? JSON.parse(productDetails.preview_image).length - 1
+                        : prev - 1
+                    );
+                  }}
+                  className="pointer-events-auto bg-white/80 rounded-full p-1 md:p-2 hover:bg-white shadow-md"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  setDirection('right');
-                  setCurrentImageIndex((prev) =>
-                    prev === JSON.parse(productDetails.preview_image).length - 1
-                      ? 0
-                      : prev + 1
-                  );
-                }}
-                className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/80 rounded-full p-1 md:p-2 hover:bg-white z-10"
-              >
-                <svg
-                  className="w-4 h-4 md:w-6 md:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  <svg
+                    className="w-4 h-4 md:w-6 md:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    setDirection('right');
+                    setCurrentImageIndex((prev) =>
+                      prev === JSON.parse(productDetails.preview_image).length - 1
+                        ? 0
+                        : prev + 1
+                    );
+                  }}
+                  className="pointer-events-auto bg-white/80 rounded-full p-1 md:p-2 hover:bg-white shadow-md"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </motion.button>
+                  <svg
+                    className="w-4 h-4 md:w-6 md:h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </motion.button>
+              </div>
 
-              {/* Thumbnail Slider */}
               <div className="flex space-x-2 md:space-x-4 mt-4 overflow-x-auto pb-4">
                 {JSON.parse(productDetails.preview_image).map((item, index) => (
                   item.toLowerCase().endsWith('.mp4') ? (
@@ -443,7 +497,7 @@ Thank you.
                       key={index}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`w-16 h-16 md:w-20 md:h-20 relative rounded-lg cursor-pointer ${
+                      className={`w-16 h-16 md:w-20 md:h-20 relative rounded-lg cursor-pointer flex-shrink-0 ${
                         currentImageIndex === index ? "border-2 border-blue-500" : ""
                       }`}
                       onClick={() => {
@@ -451,19 +505,38 @@ Thank you.
                         setCurrentImageIndex(index);
                       }}
                     >
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-lg">
-                        <svg
-                          className="w-8 h-8 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
+                      <div className="relative w-full h-full">
+                        <video
+                          src={`https://admin.urbantyohar.com/${item.replace(/\\/g, "/")}`}
+                          className="w-full h-full object-cover rounded-lg opacity-70"
+                          preload="metadata"
+                          muted
+                          playsInline
+                          onLoadedMetadata={(e) => {
+                            e.target.currentTime = 0.1;
+                          }}
+                          onError={(e) => {
+                            const container = e.target.parentElement;
+                            if (container) {
+                              const img = document.createElement('img');
+                              img.src = `https://via.placeholder.com/80?text=Video`;
+                              img.alt = `Video thumbnail ${index}`;
+                              img.className = "w-full h-full object-cover rounded-lg opacity-70";
+                              container.appendChild(img);
+                              e.target.style.display = 'none';
+                            }
+                          }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-lg">
+                          <svg
+                            className="w-8 h-8 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
                       </div>
-                      <video
-                        src={`https://admin.urbantyohar.com/${item.replace(/\\/g, "/")}`}
-                        className="w-full h-full object-cover rounded-lg opacity-70"
-                      />
                     </motion.div>
                   ) : (
                     <motion.img
@@ -472,7 +545,7 @@ Thank you.
                       whileTap={{ scale: 0.95 }}
                       src={`https://admin.urbantyohar.com/${item.replace(/\\/g, "/")}`}
                       alt={`Thumbnail ${index}`}
-                      className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg cursor-pointer ${
+                      className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg cursor-pointer flex-shrink-0 ${
                         currentImageIndex === index ? "border-2 border-blue-500" : ""
                       }`}
                       onClick={() => {
@@ -494,8 +567,7 @@ Thank you.
     <p className="text-gray-500 text-center">No video or product details available</p>
   )}
 
-  {/* Modal for desktop view */}
-  {isModalOpen && isDesktop() && (
+  {isModalOpen && (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -508,22 +580,22 @@ Thank you.
         initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.2 }}
-        className="relative max-w-5xl w-full max-h-[90vh] mx-auto p-4"
+        className="relative max-w-xl w-full max-h-[95vh] mx-auto p-4"
         onClick={e => e.stopPropagation()}
       >
-        {/* Modal content */}
         {selectedVideo && selectedVideo.video ? (
           <video
+            key={`modal-video-${selectedVideo.video}`}
             src={`https://admin.urbantyohar.com/${selectedVideo.video}`}
             controls
             autoPlay
-            className="w-full h-auto max-h-[80vh] rounded-lg object-contain mx-auto"
+            className="w-full h-auto max-h-[85vh] rounded-lg mx-auto"
           >
             Your browser does not support the video tag.
           </video>
         ) : productDetails?.preview_image ? (
           <>
-            <div className="relative" style={{ height: '70vh' }}>
+            <div className="relative flex items-center justify-center">
               <AnimatePresence initial={false} custom={direction}>
                 {JSON.parse(productDetails.preview_image)[currentImageIndex]?.toLowerCase().endsWith('.mp4') ? (
                   <motion.video
@@ -531,18 +603,18 @@ Thank you.
                     custom={direction}
                     initial={(direction) => ({ 
                       opacity: 0, 
-                      x: direction === 'left' ? -300 : 300 
+                      x: direction === 'left' ? '-100%' : '100%' 
                     })}
                     animate={{ opacity: 1, x: 0 }}
                     exit={(direction) => ({ 
                       opacity: 0, 
-                      x: direction === 'left' ? 300 : -300 
+                      x: direction === 'left' ? '100%' : '-100%' 
                     })}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
                     src={`https://admin.urbantyohar.com/${JSON.parse(productDetails.preview_image)[currentImageIndex].replace(/\\/g, "/")}`}
                     controls
                     autoPlay
-                    className="w-full h-full object-contain rounded-lg absolute inset-0"
+                    className="w-full h-auto max-h-[85vh] rounded-lg"
                   >
                     Your browser does not support the video tag.
                   </motion.video>
@@ -552,24 +624,23 @@ Thank you.
                     custom={direction}
                     initial={(direction) => ({ 
                       opacity: 0, 
-                      x: direction === 'left' ? -300 : 300 
+                      x: direction === 'left' ? '-100%' : '100%' 
                     })}
                     animate={{ opacity: 1, x: 0 }}
                     exit={(direction) => ({ 
                       opacity: 0, 
-                      x: direction === 'left' ? 300 : -300 
+                      x: direction === 'left' ? '100%' : '-100%' 
                     })}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
                     src={`https://admin.urbantyohar.com/${JSON.parse(productDetails.preview_image)[currentImageIndex].replace(/\\/g, "/")}`}
                     alt="Product"
-                    className="w-full h-full object-contain rounded-lg absolute inset-0"
+                    className="w-full h-auto max-h-[85vh] rounded-lg"
                   />
                 )}
               </AnimatePresence>
             </div>
             
-            {/* Modal navigation controls */}
-            <div className="absolute top-1/2 left-0 right-0 flex justify-between transform -translate-y-1/2 px-4">
+            <div className="absolute inset-0 flex items-center justify-between pointer-events-none px-4">
               <motion.button
                 whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
                 whileTap={{ scale: 0.9 }}
@@ -582,7 +653,7 @@ Thank you.
                       : prev - 1
                   );
                 }}
-                className="bg-white/20 hover:bg-white/40 p-2 rounded-full transition-colors z-10"
+                className="pointer-events-auto bg-white/20 hover:bg-white/40 p-2 rounded-full transition-colors z-10"
               >
                 <svg
                   className="w-8 h-8 text-white"
@@ -606,7 +677,7 @@ Thank you.
                       : prev + 1
                   );
                 }}
-                className="bg-white/20 hover:bg-white/40 p-2 rounded-full transition-colors z-10"
+                className="pointer-events-auto bg-white/20 hover:bg-white/40 p-2 rounded-full transition-colors z-10"
               >
                 <svg
                   className="w-8 h-8 text-white"
@@ -619,14 +690,13 @@ Thank you.
               </motion.button>
             </div>
             
-            {/* Thumbnails in modal */}
-            <div className="flex justify-center space-x-2 md:space-x-3 mt-4">
+            <div className="flex justify-center space-x-2 md:space-x-3 mt-4 overflow-x-auto pb-2">
               {JSON.parse(productDetails.preview_image).map((item, index) => (
                 <motion.div 
                   key={index} 
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`w-12 h-12 md:w-16 md:h-16 relative cursor-pointer ${
+                  className={`w-12 h-12 md:w-16 md:h-16 relative cursor-pointer flex-shrink-0 ${
                     currentImageIndex === index ? "ring-2 ring-blue-500" : ""
                   }`}
                   onClick={(e) => {
@@ -640,6 +710,12 @@ Thank you.
                       <video
                         src={`https://admin.urbantyohar.com/${item.replace(/\\/g, "/")}`}
                         className="w-full h-full object-cover rounded opacity-80"
+                        preload="metadata"
+                        muted
+                        playsInline
+                        onLoadedMetadata={(e) => {
+                          e.target.currentTime = 0.1;
+                        }}
                       />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -660,7 +736,6 @@ Thank you.
           </>
         ) : null}
         
-        {/* Close button */}
         <motion.button
           whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
           whileTap={{ scale: 0.9 }}
@@ -1036,7 +1111,7 @@ Thank you.
 </div>
 
 {/* Mobile Bottom Bar */}
-<div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-200 shadow-lg border-t border-gray-200 p-1 z-50 px-2">
+<div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-200 shadow-lg border-t border-gray-200 p-1 z-40 px-2">
   <div className="flex items-center justify-between">
     <div className="w-1/4 pl-3">
       <span className="font-bold text-lg">₹{Math.round((productDetails?.offer_dis + (quantity * productDetails?.single_price || 0)) * 1.18)}</span>

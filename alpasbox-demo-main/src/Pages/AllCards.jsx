@@ -207,7 +207,7 @@ const CardItem = ({ card }) => (
               : "https://via.placeholder.com/300?text=No+Thumbnail"
             }
             alt={card.product_type || "Card"}
-            className="w-full h-full object-cover p-2"
+            className="w-full  object-contain p-2"
             onError={(e) => {
               e.target.src = "https://via.placeholder.com/300?text=Image+Error";
             }}

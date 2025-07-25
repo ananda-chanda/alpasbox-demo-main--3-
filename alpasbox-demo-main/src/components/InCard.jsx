@@ -118,8 +118,8 @@ const WeddingInvitation = () => {
             />
           </div>
 
-          <div className="container mx-auto py-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+          <div className="container mx-auto py-8 px-3">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
               {isPending ? (
                 <div className="col-span-full flex justify-center items-center py-12">
                   <div className="animate-pulse text-xl">Loading cards...</div>
@@ -155,7 +155,7 @@ const WeddingInvitation = () => {
                         <img
                           src={`${baseUrl}/${cart.card_thumbnail}`}
                           alt={cart.maincat_name || 'Card thumbnail'}
-                          className="w-[400px] h-[440px] object-cover p-1 hover:scale-105 transition-transform duration-300"
+                          className="w-[400px]  h-[180px] md:h-[440px]   md:object-cover p-1 hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
                             e.target.src = '/placeholder-image.jpg';
                             e.target.alt = 'Image not available';
@@ -173,13 +173,13 @@ const WeddingInvitation = () => {
                       </h2>
                       <div className="flex flex-col justify-between items-center mb-0 mt-3">
                         <div className="flex items-center">
-                          <span className="text-gray-500 line-through text-sm mr-2">₹{cart.price}</span>
+                          <span className="text-gray-600 line-through text-md mr-2">₹{cart.price}</span>
                           <span className="text-xl font-bold text-gray-800">₹{cart.offer_dis}</span>
-                          {cart.price && cart.offer_dis && (
+                          {/* {cart.price && cart.offer_dis && (
                             <span className="text-xs text-green-600 px-3">
                               ({Math.round((1 - cart.offer_dis / cart.price) * 100)}% off)
                             </span>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
